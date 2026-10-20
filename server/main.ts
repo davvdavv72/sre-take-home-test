@@ -10,6 +10,8 @@ import * as insightsTable from "$tables/insights.ts";
 console.log("Loading configuration");
 
 const env = {
+  // Containers need 0.0.0.0 to accept traffic from outside the container.
+  host: Deno.env.get("SERVER_HOST") ?? "127.0.0.1",
   port: Port.parse(Deno.env.get("SERVER_PORT")),
   dbPath: Deno.env.get("DB_PATH") ?? path.join("tmp", "db.sqlite3"),
 };
@@ -87,11 +89,15 @@ app.use(router.allowedMethods());
 const controller = new AbortController();
 const SHUTDOWN_TIMEOUT_MS = 10_000;
 
-app.addEventListener("listen", ({ port }) => {
-  console.log(`Started server on port ${port}`);
+app.addEventListener("listen", ({ hostname, port }) => {
+  console.log(`Started server on ${hostname}:${port}`);
 });
 
-const server = app.listen({ port: env.port, signal: controller.signal });
+const server = app.listen({
+  hostname: env.host,
+  port: env.port,
+  signal: controller.signal,
+});
 
 // Stop accepting connections, give in-flight requests time to finish,
 // then close the DB and exit. Exit explicitly: the signal listeners
