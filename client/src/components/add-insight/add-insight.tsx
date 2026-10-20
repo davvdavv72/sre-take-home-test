@@ -1,6 +1,7 @@
 import { BRANDS } from "../../lib/consts.ts";
 import { Button } from "../button/button.tsx";
 import { Modal, type ModalProps } from "../modal/modal.tsx";
+// @ts-types="../../types/css-module.d.ts"
 import styles from "./add-insight.module.css";
 
 type AddInsightProps = ModalProps;
