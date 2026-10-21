@@ -24,19 +24,19 @@ curl -i http://localhost:8080/api/_ready   # backend + DB, via the proxy
 
 One change per commit:
 
-| Commit                           | Why                                                                                      |
-| -------------------------------- | ---------------------------------------------------------------------------------------- |
-| Fix CSS module typecheck errors  | `deno check` can't see Vite CSS modules (TS1192/TS2300)                                  |
-| Fix client type errors           | `app.tsx` put an unresolved promise in state; test data missing `id`                     |
+| Commit                           | Why                                                                                           |
+| -------------------------------- | --------------------------------------------------------------------------------------------- |
+| Fix CSS module typecheck errors  | `deno check` can't see Vite CSS modules (TS1192/TS2300)                                       |
+| Fix client type errors           | `app.tsx` put an unresolved promise in state; test data missing `id`                          |
 | Fix server startup and lifecycle | Table never created, `/insights` returned `200` as its body; added `/_ready`, errors, SIGTERM |
-| Fix lint errors                  | `jsx-key`, `jsx-boolean-value`, `no-slow-types`                                          |
-| Regenerate `deno.lock`           | Old lockfile format; `deno install --frozen` failed on Deno 2.4.2                         |
-| Grant permissions to the binary  | Compiled binary died at startup (`NotCapable: Requires env access`)                      |
-| Configurable listen address      | Oak binds `127.0.0.1` by default, so nothing outside the container can reach it          |
-| Server Dockerfile                | Deliverable 1                                                                            |
-| nginx image + compose            | Deliverable 2                                                                            |
-| Fix `deno fmt --check`           | So CI can enforce formatting (template docs excluded)                                    |
-| CI/CD workflow                   | Deliverable 3                                                                            |
+| Fix lint errors                  | `jsx-key`, `jsx-boolean-value`, `no-slow-types`                                               |
+| Regenerate `deno.lock`           | Old lockfile format; `deno install --frozen` failed on Deno 2.4.2                             |
+| Grant permissions to the binary  | Compiled binary died at startup (`NotCapable: Requires env access`)                           |
+| Configurable listen address      | Oak binds `127.0.0.1` by default, so nothing outside the container can reach it               |
+| Server Dockerfile                | Deliverable 1                                                                                 |
+| nginx image + compose            | Deliverable 2                                                                                 |
+| Fix `deno fmt --check`           | So CI can enforce formatting (template docs excluded)                                         |
+| CI/CD workflow                   | Deliverable 3                                                                                 |
 
 ## 1. Backend container
 
@@ -190,15 +190,15 @@ machine, so:
 
 **What we need:**
 
-| Signal        | What                                                                                                    |
-| ------------- | ------------------------------------------------------------------------------------------------------- |
-| Health        | Liveness `/_health` (process up) and readiness `/_ready` (DB reachable). Both done                       |
-| Logs          | Structured JSON with level, request ID, route, status, duration; shipped centrally                      |
-| Metrics       | Request rate, errors and duration (RED) per route; DB query latency; saturation                         |
-| Traces        | OpenTelemetry from nginx through the server to the DB; Deno has OTel built in (`OTEL_DENO=true`)        |
-| Errors        | Error tracking (e.g. Sentry) for server and browser                                                     |
-| User-side     | External synthetic checks on `/api/_ready`; front-end real-user monitoring                              |
-| SLOs + alerts | e.g. 99.9% of `/api/insights` requests succeed, p95 < 300 ms; page on fast burn, ticket on slow burn     |
+| Signal        | What                                                                                                 |
+| ------------- | ---------------------------------------------------------------------------------------------------- |
+| Health        | Liveness `/_health` (process up) and readiness `/_ready` (DB reachable). Both done                   |
+| Logs          | Structured JSON with level, request ID, route, status, duration; shipped centrally                   |
+| Metrics       | Request rate, errors and duration (RED) per route; DB query latency; saturation                      |
+| Traces        | OpenTelemetry from nginx through the server to the DB; Deno has OTel built in (`OTEL_DENO=true`)     |
+| Errors        | Error tracking (e.g. Sentry) for server and browser                                                  |
+| User-side     | External synthetic checks on `/api/_ready`; front-end real-user monitoring                           |
+| SLOs + alerts | e.g. 99.9% of `/api/insights` requests succeed, p95 < 300 ms; page on fast burn, ticket on slow burn |
 
 **Done so far:**
 
@@ -217,8 +217,8 @@ machine, so:
 - Request middleware for timing, status and request ID (using nginx's
   `X-Request-ID` if present).
 - OpenTelemetry instrumentation and a metrics exporter.
-- Return 404 for unknown IDs. Right now a miss returns `200` with an empty
-  body, which hides errors in the metrics.
+- Return 404 for unknown IDs. Right now a miss returns `200` with an empty body,
+  which hides errors in the metrics.
 - A `/_version` endpoint or log line with the git SHA.
 - nginx JSON access logs with upstream timing.
 
